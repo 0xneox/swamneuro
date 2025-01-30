@@ -20,18 +20,25 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Initialize dashboard data
-    fetchDashboardData();
+    if (wallet.publicKey) {
+      fetchDashboardData();
+    }
   }, [wallet.publicKey]);
 
   const fetchDashboardData = async () => {
     if (!wallet.publicKey) return;
     
     try {
-      const response = await fetch(`https://api.neurolov.xyz/dashboard/${wallet.publicKey}`);
+      const response = await fetch(`/api/dashboard/${wallet.publicKey.toString()}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-      setEarnings(data.earnings);
+      setEarnings(data.earnings || { today: 0, total: 0, multiplier: 1 });
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Set default values on error
+      setEarnings({ today: 0, total: 0, multiplier: 1 });
     }
   };
 
@@ -52,7 +59,7 @@ const Dashboard = () => {
         />
       </StatsGrid>
       <ActionPanel>
-        {/* Quick actions and notifications */}
+        {/* Add action buttons here */}
       </ActionPanel>
     </DashboardContainer>
   );

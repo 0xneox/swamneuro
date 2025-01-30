@@ -1,0 +1,16 @@
+{
+  "name": "neurolov-stable-diffusion",
+  "version": "1.0.0",
+  "description": "Stable Diffusion API Example",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
+  }
+}

@@ -1,29 +1,53 @@
 export const theme = {
   colors: {
-    primary: {
-      background: '#0A0A0A',
-      text: '#FFFFFF',
-      accent: '#00FF88'
+    primary: '#00FF88',
+    secondary: '#9945FF',
+    background: '#0A0A0A',
+    surface: '#111111',
+    text: {
+      primary: '#FFFFFF',
+      secondary: '#B0B0B0',
     },
-    secondary: {
-      purple: '#9945FF',
-      red: '#FF3B3B',
-      text: '#B0B0B0'
-    }
+    error: '#FF3B3B',
   },
-  gradients: {
-    primary: 'linear-gradient(to right, #00FF88, #9945FF)',
-    dark: 'linear-gradient(to bottom, #0A0A0A, #1A1A1A)'
-  },
-  shadows: {
-    small: '0 2px 4px rgba(0, 255, 136, 0.1)',
-    medium: '0 4px 8px rgba(0, 255, 136, 0.2)',
-    large: '0 8px 16px rgba(0, 255, 136, 0.3)'
+  spacing: {
+    xs: '0.25rem',
+    sm: '0.5rem',
+    md: '1rem',
+    lg: '1.5rem',
+    xl: '2rem',
+    xxl: '3rem',
   },
   breakpoints: {
-    mobile: '320px',
-    tablet: '768px',
-    desktop: '1024px',
-    wide: '1440px'
-  }
+    sm: '576px',
+    md: '768px',
+    lg: '992px',
+    xl: '1200px',
+  },
+  typography: {
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    h1: {
+      fontSize: '3.5rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
+    },
+    h2: {
+      fontSize: '2.5rem',
+      fontWeight: 600,
+      lineHeight: 1.3,
+    },
+    h3: {
+      fontSize: '2rem',
+      fontWeight: 600,
+      lineHeight: 1.4,
+    },
+    body1: {
+      fontSize: '1rem',
+      lineHeight: 1.5,
+    },
+    body2: {
+      fontSize: '0.875rem',
+      lineHeight: 1.5,
+    },
+  },
 };
