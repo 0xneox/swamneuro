@@ -1,21 +1,69 @@
 version: '3.8'
 
 services:
-  backend:
-    build: 
+  edge-node:
+    build:
       context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
-      - "3002:3002"
+      dockerfile: Dockerfile.edge
     environment:
       - NODE_ENV=production
+      - REGION=${EDGE_REGION:-us-west}
+      - MIN_SWARM_SIZE=${MIN_SWARM_SIZE:-10}
+      - MAX_SWARM_SIZE=${MAX_SWARM_SIZE:-1000}
       - SOLANA_RPC_URL=${SOLANA_RPC_URL}
-      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      replicas: ${EDGE_REPLICAS:-1}
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    networks:
+      - neurolov-network
+
+  monitoring:
+    image: prom/prometheus:latest
+    volumes:
+      - ./deployment/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - neurolov-network
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./deployment/grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
     depends_on:
-      - redis
+      - monitoring
+    networks:
+      - neurolov-network
 
   redis:
     image: redis:alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
     ports:
       - "6379:6379"
+    networks:
+      - neurolov-network
+
+networks:
+  neurolov-network:
+    driver: bridge
+
+volumes:
+  grafana-data:
+  redis-data:

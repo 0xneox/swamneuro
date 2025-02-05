@@ -1,0 +1,27 @@
+{
+  "name": "neurolov-defi-risk-analysis",
+  "version": "1.0.0",
+  "description": "DeFi Risk Analysis example for Neurolov Network",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node --esm src/index.ts",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.87.6",
+    "axios": "^1.6.5",
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "ts-node-dev": "^2.0.0"
+  }
+}

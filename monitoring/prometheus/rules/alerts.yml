@@ -1,0 +1,82 @@
+groups:
+  - name: neurolov
+    rules:
+      # Node Health
+      - alert: NodeDown
+        expr: up{job="neurolov-node"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.instance }} down"
+          description: "Node has been down for more than 5 minutes."
+
+      # Performance
+      - alert: HighLatency
+        expr: neurolov_task_latency_seconds > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on {{ $labels.instance }}"
+          description: "Task latency is above 10 seconds."
+
+      # Resource Usage
+      - alert: HighGPUUsage
+        expr: neurolov_gpu_usage_percent > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High GPU usage on {{ $labels.instance }}"
+          description: "GPU usage above 90% for 10 minutes."
+
+      # Task Processing
+      - alert: HighTaskFailureRate
+        expr: rate(neurolov_tasks_failed_total[5m]) / rate(neurolov_tasks_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High task failure rate"
+          description: "Task failure rate is above 10%."
+
+      # Network Health
+      - alert: NetworkPartition
+        expr: neurolov_network_partition_detected == 1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network partition detected"
+          description: "Network partition detected in the swarm."
+
+      # Cost Monitoring
+      - alert: HighCostRate
+        expr: rate(neurolov_cost_total[1h]) > 100
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High cost rate detected"
+          description: "Cost rate is above 100 NEURO per hour."
+
+      # Security
+      - alert: UnauthorizedAccess
+        expr: rate(neurolov_unauthorized_access_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Unauthorized access attempts detected"
+          description: "Multiple unauthorized access attempts detected."
+
+      # API Health
+      - alert: HighAPIErrorRate
+        expr: rate(neurolov_api_errors_total[5m]) / rate(neurolov_api_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API error rate"
+          description: "API error rate is above 5%."

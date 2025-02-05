@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  gateway:
+    build: ./backend/gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=testnet
+      - API_KEY=${TESTNET_API_KEY}
+    depends_on:
+      - coordinator
+      - validator
+      - storage
+
+  # Coordinator Nodes
+  coordinator:
+    build: ./backend/coordinator
+    deploy:
+      replicas: 3
+    environment:
+      - NODE_ENV=testnet
+      - MIN_STAKE=50000
+      - NETWORK_ID=${TESTNET_NETWORK_ID}
+    volumes:
+      - coordinator_data:/data
+
+  # Validator Nodes
+  validator:
+    build: ./backend/validator
+    deploy:
+      replicas: 5
+    environment:
+      - NODE_ENV=testnet
+      - MIN_STAKE=10000
+      - NETWORK_ID=${TESTNET_NETWORK_ID}
+    volumes:
+      - validator_data:/data
+
+  # Storage Nodes
+  storage:
+    build: ./backend/storage
+    deploy:
+      replicas: 3
+    environment:
+      - NODE_ENV=testnet
+      - MIN_STAKE=25000
+      - NETWORK_ID=${TESTNET_NETWORK_ID}
+    volumes:
+      - storage_data:/data
+
+  # Monitoring Stack
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana:/etc/grafana
+      - grafana_data:/var/lib/grafana
+
+  # Example Projects
+  stable-diffusion:
+    build: ./examples/stable-diffusion-api
+    ports:
+      - "8081:3000"
+    environment:
+      - NODE_ENV=testnet
+      - API_KEY=${TESTNET_API_KEY}
+
+  defi-analysis:
+    build: ./examples/defi-risk-analysis
+    ports:
+      - "8082:3000"
+    environment:
+      - NODE_ENV=testnet
+      - API_KEY=${TESTNET_API_KEY}
+
+  game-ai:
+    build: ./examples/game-ai-npcs
+    ports:
+      - "8083:3000"
+    environment:
+      - NODE_ENV=testnet
+      - API_KEY=${TESTNET_API_KEY}
+
+  # Database
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  coordinator_data:
+  validator_data:
+  storage_data:
+  prometheus_data:
+  grafana_data:
+  redis_data:
